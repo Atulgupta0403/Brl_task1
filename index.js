@@ -1,5 +1,10 @@
 const express = require("express")
 const app = express()
+const cors = require("cors")
+
+app.use(cors({
+    origin : "*"
+}))
 
 const Notes = require("./Routes/notes")
 
@@ -10,7 +15,7 @@ app.get("/" ,(req,res) => {
     res.send("slash page")
 })
 
-app.use("/notes",Notes);
+app.use("/api/notes",Notes);
 
 
 app.listen(3000);
