@@ -19,7 +19,7 @@ router.post("/" , async (req,res) => {
             title : title
         })
         
-        console.log(createNote);
+        // console.log(createNote);
         res.send(createNote)
     }
 
@@ -34,8 +34,8 @@ router.get("/" ,async (req,res) => {
 
 router.post("/delete" , async (req,res) => {
     const {noteId} = req.body ;
-    console.log(req.body)
-    console.log(noteId)
+    // console.log(req.body)
+    // console.log(noteId)
     await notesModel.findOneAndDelete({noteId : noteId});
     res.send("deleted")
 })
