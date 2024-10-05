@@ -7,7 +7,6 @@ app.use(cors({
 }))
 
 const Notes = require("./Routes/notes")
-const Edit = require("./Routes/edit")
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
@@ -17,7 +16,6 @@ app.get("/" ,(req,res) => {
 })
 
 app.use("/api/notes",Notes);
-app.use("/api/edit" , Edit)
 
 
 app.listen(3000);

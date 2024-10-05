@@ -1,7 +1,9 @@
 // import mongoose from "mongoose";
 const mongoose = require("mongoose")
 
-mongoose.connect("mongodb://localhost:27017/BRLtask1")
+// const mongodb_url = require("../env")
+
+mongoose.connect("mongodb+srv://atulgupta0403:Atul2004@cluster0.r71it.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
 const noteSchema = new mongoose.Schema({
     noteId : {
