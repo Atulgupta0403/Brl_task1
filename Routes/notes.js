@@ -32,8 +32,8 @@ router.get("/", async (req, res) => {
     res.send(createdNote);
 })
 
-router.post("/deleteOne", async (req, res) => {
-    const { noteId } = req.body;
+router.post("/deleteOne/:noteId", async (req, res) => {
+    const { noteId } = req.params;
     await notesModel.findOneAndDelete({ noteId: noteId });
     res.send("deleted")
 })
