@@ -23,4 +23,26 @@ const registerUser = async (req,res) => {
 
 }
 
-module.exports = {registerUser}
+
+const loginUser = async (req,res) => {
+    const {username , password} = req.body;
+    const data = await userModel.findOne({username});
+    console.log("data === " , data)
+
+    if(!data){
+        res.send(`there is no user with username ${username}`)
+    }
+    else{
+        if(password === data.password){
+            const token = jwt.sign({username} , "secret");
+            console.log(token)
+            res.send("ho gya bhai login")
+        }
+        else{
+            res.send("Your password is incorrect");
+        }
+    }
+
+}
+
+module.exports = {registerUser,loginUser}
