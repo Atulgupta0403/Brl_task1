@@ -1,23 +1,31 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
 const userModel = require("../Models/userModel")
+const cookieParser = require("cookie-parser")
+
+const isLoggedIn = require("../Middlewares/isLoggedIn")
+
+const app = express()
+app.use(cookieParser())
 
 const registerUser = async (req,res) => {
-    const {name ,username , password , email} = req.body;
+    const {username , password , email} = req.body;
 
-    const data = await userModel.findOne({email});
+    const data = await userModel.findOne({username});
 
     if(data){
         res.send("email already exist")
     }
     else{
         const createData = await userModel.create({
-            name,
+            // name,
             password,
             email,
             username
         })
 
+        const token = jwt.sign({username} , "secret");
+        res.cookie("token" , token)
         res.send(createData);
     }
 
@@ -27,7 +35,7 @@ const registerUser = async (req,res) => {
 const loginUser = async (req,res) => {
     const {username , password} = req.body;
     const data = await userModel.findOne({username});
-    console.log("data === " , data)
+    // console.log("data === " , data)
 
     if(!data){
         res.send(`there is no user with username ${username}`)
@@ -35,8 +43,16 @@ const loginUser = async (req,res) => {
     else{
         if(password === data.password){
             const token = jwt.sign({username} , "secret");
-            console.log(token)
+            // console.log(token)
+
+            res.cookie("token" , token)
+
+            console.log("login se console " , req.cookies)
             res.send("ho gya bhai login")
+
+
+
+
         }
         else{
             res.send("Your password is incorrect");

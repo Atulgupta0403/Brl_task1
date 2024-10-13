@@ -18,13 +18,9 @@ router.post("/", async (req, res) => {
             content: content,
             title: title
         })
-
         // console.log(createNote);
         res.send(createNote)
     }
-
-
-
 })
 
 router.get("/", async (req, res) => {
