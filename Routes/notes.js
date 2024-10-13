@@ -2,29 +2,39 @@ const express = require("express")
 const router = express.Router();
 
 const notesModel = require("../Models/notesModel");
+const userModel = require("../Models/userModel")
 const {isLoggedIn} = require("../Middlewares/isLoggedIn")
 
 
 router.post("/", isLoggedIn , async (req, res) => {
 
     const { noteId, title, content } = req.body;
-
-
-
-    let Id = await notesModel.findOne({ noteId: noteId });
-    if (Id) {
-        // console.log(Id)
-        res.send("pls enter another id , this id has been selected prviously")
+    
+    if(req.user){
+        const {username} = req.user;
+        
+        let Id = await notesModel.findOne({ noteId: noteId });
+        let user = await userModel.findOne({ username });
+        console.log(user)
+        if (Id) {
+            // console.log(Id)
+            res.send("pls enter another id , this id has been selected prviously")
+        }
+        else {
+            const createNote = await notesModel.create({
+                noteId: noteId,
+                content: content,
+                title: title
+            })
+            // console.log(createNote);
+            createNote.userId = user._id;  
+            res.send(createNote)
+        }
     }
-    else {
-        const createNote = await notesModel.create({
-            noteId: noteId,
-            content: content,
-            title: title
-        })
-        // console.log(createNote);
-        res.send(createNote)
+    else{
+        res.send("pls login kro you are redirected to /login")
     }
+    
 })
 
 router.get("/", async (req, res) => {
@@ -55,7 +65,6 @@ router.put("/put", async (req, res) => {
     const { } = req.body;
     const { noteId, title, content } = req.body;
 
-
     const updatedNote = await notesModel.findOneAndUpdate(
         { noteId: noteId },
         { $set: { title: title, content: content } },
@@ -69,8 +78,6 @@ router.put("/put", async (req, res) => {
 
         res.send(updatedNote)
     }
-
-
 })
 
 

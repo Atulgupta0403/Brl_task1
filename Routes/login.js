@@ -6,7 +6,7 @@ const {loginUser, logout} = require("../Controllers/userController")
 const {isLoggedIn} = require("../Middlewares/isLoggedIn")
 
 // router.use(isLoggedIn)
-router.post("/" , isLoggedIn , loginUser)
+router.post("/"  , loginUser)
 
 
 
