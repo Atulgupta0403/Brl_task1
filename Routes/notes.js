@@ -2,10 +2,14 @@ const express = require("express")
 const router = express.Router();
 
 const notesModel = require("../Models/notesModel");
+const {isLoggedIn} = require("../Middlewares/isLoggedIn")
 
 
-router.post("/", async (req, res) => {
+router.post("/", isLoggedIn , async (req, res) => {
+
     const { noteId, title, content } = req.body;
+
+
 
     let Id = await notesModel.findOne({ noteId: noteId });
     if (Id) {

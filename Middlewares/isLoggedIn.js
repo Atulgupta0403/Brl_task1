@@ -1,13 +1,10 @@
-const express = require("express")
-const cookieParser = require("cookie-parser")
-const app = express()
+const jwt = require("jsonwebtoken")
 
-app.use(cookieParser())
 
 const isLoggedIn = (req,res,next) => {
-    const token = req.cookies;
-    console.log(" isLoggedIn " ,token)
-    // res.send(token)
+    const token = req.cookies.token;
+    const data = jwt.verify(token , "secret")
+    req.user = data
     next();
 }
 

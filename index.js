@@ -4,6 +4,8 @@ const app = express()
 const cors = require("cors")
 const passport = require("passport")
 const session = require("express-session")
+const cookieParser = require("cookie-parser")
+app.use(cookieParser()) 
 
 app.use(cors({
   origin: "*"
@@ -12,13 +14,14 @@ app.use(cors({
 const Notes = require("./Routes/notes")
 const register = require("./Routes/register")
 const login = require("./Routes/login")
+const logout = require("./Routes/logout")
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send("<a href='/auth/google'> Login with google </a>")
-})
+// app.get("/", (req, res) => {
+//   res.send("<a href='/auth/google'> Login with google </a>")
+// })
 
 
 // =====================================================================================================================
@@ -117,11 +120,6 @@ app.get("/auth/google/failure", (req, res) => {
   res.send("failure hone k baad ")
 })
 
-app.get("/logout" , (req,res) => {
-  // req.logout(() => {
-  // });
-  res.redirect("/")
-})
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -132,9 +130,10 @@ app.get("/logout" , (req,res) => {
 app.use("/api/notes", Notes);
 app.use("/register", register)
 app.use("/login", login)
+app.use("/logout", logout)
 
 app.get("/cookie" , (req,res) => {
-  res.send(req.cookies?"atul" : "gupta")
+  res.send(req.cookies)
 })
 
 
