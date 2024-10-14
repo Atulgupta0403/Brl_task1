@@ -4,5 +4,4 @@ const router = express.Router()
 
 router.get("/" , logout)
 
-
 module.exports = router;

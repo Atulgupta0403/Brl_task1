@@ -24,10 +24,11 @@ router.post("/", isLoggedIn , async (req, res) => {
             const createNote = await notesModel.create({
                 noteId: noteId,
                 content: content,
-                title: title
+                title: title,
+                userId : user._id
             })
             // console.log(createNote);
-            createNote.userId = user._id;  
+            createNote.userId = user._id;
             res.send(createNote)
         }
     }
@@ -37,27 +38,56 @@ router.post("/", isLoggedIn , async (req, res) => {
     
 })
 
-router.get("/", async (req, res) => {
-    const createdNote = await notesModel.find({});
-    res.send(createdNote);
+router.get("/", isLoggedIn ,  async (req, res) => {
+    if(req.user){
+
+        const createdNote = await notesModel.find({});
+        res.send(createdNote);
+    }
+    else{
+        res.send("first login kro you are directed to /login ")
+    }
 })
 
-router.post("/deleteOne/:noteId", async (req, res) => {
-    const { noteId } = req.params;
-    await notesModel.findOneAndDelete({ noteId: noteId });
-    res.send("deleted")
+router.post("/deleteOne/:noteId", isLoggedIn , async (req, res) => {
+    if(req.user){
+        const { noteId } = req.params;
+        await notesModel.findOneAndDelete({ noteId: noteId });
+        res.send("deleted")
+    }
+    else{
+        res.send("login kro phle you are directed to /login ")
+    }
 })
 
-router.get("/deleteAll", async (req, res) => {
-    await notesModel.deleteMany({})
-    res.send("deleted all")
+router.get("/deleteAll", isLoggedIn , async (req, res) => {
+    if(req.user){
+        const user = await userModel.findOne({username : req.user.username})
+        await notesModel.deleteMany({})
+        res.send("deleted all")
+    }
+    else{
+        res.send("login kro phle you are directed to /login")
+    }
 })
 
-router.get("/note", async (req, res) => {
-    const { noteId } = req.body;
-    const singleData = await notesModel.findOne({ noteId: noteId });
-    console.log(singleData)
-    res.send(singleData)
+router.get("/note/:noteId", isLoggedIn , async (req, res) => {
+    if(req.user){
+        const { noteId } = req.params;
+        const user = await userModel.findOne({username : req.user.username})
+        console.log(user)
+        const singleData = await notesModel.findOne( { noteId: noteId , userId : user._id});
+        if(singleData){
+            console.log(singleData)
+            res.send(singleData)
+        }
+        else{
+            res.send(`there is no noteId `)
+        }
+    }
+    else{
+        res.send("login kro phle you are directed to /login")
+    }
 })
 
 
