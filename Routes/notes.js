@@ -6,6 +6,7 @@ const userModel = require("../Models/userModel")
 const {isLoggedIn} = require("../Middlewares/isLoggedIn")
 
 
+// making note
 router.post("/", isLoggedIn , async (req, res) => {
 
     const { noteId, title, content } = req.body;
@@ -38,10 +39,12 @@ router.post("/", isLoggedIn , async (req, res) => {
     
 })
 
+
+// read all note
 router.get("/", isLoggedIn ,  async (req, res) => {
     if(req.user){
-
-        const createdNote = await notesModel.find({});
+        const user = await userModel.findOne({username : req.user.username})
+        const createdNote = await notesModel.find({ userId : user._id});
         res.send(createdNote);
     }
     else{
@@ -49,6 +52,8 @@ router.get("/", isLoggedIn ,  async (req, res) => {
     }
 })
 
+
+// delete One
 router.post("/deleteOne/:noteId", isLoggedIn , async (req, res) => {
     if(req.user){
         const { noteId } = req.params;
@@ -60,10 +65,12 @@ router.post("/deleteOne/:noteId", isLoggedIn , async (req, res) => {
     }
 })
 
+
+// delete All
 router.get("/deleteAll", isLoggedIn , async (req, res) => {
     if(req.user){
         const user = await userModel.findOne({username : req.user.username})
-        await notesModel.deleteMany({})
+        await notesModel.deleteMany({ userId : user._id })
         res.send("deleted all")
     }
     else{
@@ -71,6 +78,8 @@ router.get("/deleteAll", isLoggedIn , async (req, res) => {
     }
 })
 
+
+// read single data
 router.get("/note/:noteId", isLoggedIn , async (req, res) => {
     if(req.user){
         const { noteId } = req.params;
@@ -91,13 +100,13 @@ router.get("/note/:noteId", isLoggedIn , async (req, res) => {
 })
 
 
+
 router.put("/put", async (req, res) => {
-    const { } = req.body;
     const { noteId, title, content } = req.body;
 
     const updatedNote = await notesModel.findOneAndUpdate(
         { noteId: noteId },
-        { $set: { title: title, content: content } },
+        { $set: { title: title, content: content }},
         { new: true } // Return the updated document
     );
 
