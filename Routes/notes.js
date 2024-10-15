@@ -54,11 +54,18 @@ router.get("/", isLoggedIn ,  async (req, res) => {
 
 
 // delete One
-router.post("/deleteOne/:noteId", isLoggedIn , async (req, res) => {
+router.delete("/deleteOne", isLoggedIn , async (req, res) => {
     if(req.user){
-        const { noteId } = req.params;
-        await notesModel.findOneAndDelete({ noteId: noteId });
-        res.send("deleted")
+        const noteId = req.query.noteId;
+        const delNote = await notesModel.findOne({ noteId: noteId });
+        console.log("delnote == " , delNote)
+        if(delNote){
+            await notesModel.findOneAndDelete({noteId : noteId})
+            res.send(delNote)
+        }
+        else{
+            res.send(`there is no note with noteId ${noteId}`)
+        }
     }
     else{
         res.send("login kro phle you are directed to /login ")
@@ -67,7 +74,7 @@ router.post("/deleteOne/:noteId", isLoggedIn , async (req, res) => {
 
 
 // delete All
-router.get("/deleteAll", isLoggedIn , async (req, res) => {
+router.delete("/deleteAll", isLoggedIn , async (req, res) => {
     if(req.user){
         const user = await userModel.findOne({username : req.user.username})
         await notesModel.deleteMany({ userId : user._id })
@@ -80,18 +87,18 @@ router.get("/deleteAll", isLoggedIn , async (req, res) => {
 
 
 // read single data
-router.get("/note/:noteId", isLoggedIn , async (req, res) => {
+router.get("/note", isLoggedIn , async (req, res) => {
     if(req.user){
-        const { noteId } = req.params;
+        const noteId  = req.query.noteId;
         const user = await userModel.findOne({username : req.user.username})
         console.log(user)
         const singleData = await notesModel.findOne( { noteId: noteId , userId : user._id});
         if(singleData){
-            console.log(singleData)
+            // console.log(singleData)
             res.send(singleData)
         }
         else{
-            res.send(`there is no noteId `)
+            res.send(`there is no note with noteId = ${noteId} `)
         }
     }
     else{
@@ -100,48 +107,57 @@ router.get("/note/:noteId", isLoggedIn , async (req, res) => {
 })
 
 
+// put 
+router.put("/put", isLoggedIn , async (req, res) => {
+    if(req.user){
 
-router.put("/put", async (req, res) => {
-    const { noteId, title, content } = req.body;
-
-    const updatedNote = await notesModel.findOneAndUpdate(
-        { noteId: noteId },
-        { $set: { title: title, content: content }},
-        { new: true } // Return the updated document
-    );
-
-    if (!updatedNote) {
-        res.send(`note not found on noteId ${noteId}`)
+        const { noteId, title, content } = req.body;
+        
+        const updatedNote = await notesModel.findOneAndUpdate(
+            { noteId: noteId },
+            { $set: { title: title, content: content }},
+            { new: true } // Return the updated document
+        );
+        
+        if (!updatedNote) {
+            res.send(`note not found on noteId ${noteId}`)
+        }
+        else {
+            
+            res.send(updatedNote)
+        }
     }
-    else {
-
-        res.send(updatedNote)
+    else{
+        res.send("not loggedIn")
     }
 })
 
 
-router.patch("/patch", async (req, res) => {
-
-    const { noteId, title, content } = req.body;
-
-    const updatedNote = await notesModel.findOneAndUpdate(
-        { noteId: noteId },
-        { $set: { title, content } },
-        { new: true } // Return the updated document
-    );
-
-    if (!updatedNote) {
-        return res.send(`Note not found on noteId ${noteId}`);
+// patch
+router.patch("/patch", isLoggedIn , async (req, res) => {
+    if(req.user){
+        const { noteId, title, content } = req.body;
+        const updatedNote = await notesModel.findOneAndUpdate(
+            { noteId: noteId },
+            { $set: { title, content } },
+            { new: true } // Return the updated document
+        );
+        
+        if (!updatedNote) {
+            return res.send(`Note not found on noteId ${noteId}`);
+        }
+        
+        res.send(updatedNote);
     }
-
-    res.send(updatedNote);
+    else{
+        res.send("not LoggedIn")
+    }
 })
 
 
 
 router.get("/recent" , async (req,res) => {
-    const note = await notesModel.find().sort({createdAt : -1}).limit(1)
-    
+    const note = await notesModel.find().sort({createdAt : -1}).limit(1)    
     console.log(note)
     res.send(note)
 })

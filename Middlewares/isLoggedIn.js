@@ -6,8 +6,8 @@ const isLoggedIn = (req,res,next) => {
     if(token){
         const data = jwt.verify(token , "secret")
         req.user = data
-        console.log(data)
-        console.log(token)
+        // console.log(data)
+        // console.log(token)
     }
     // else{
     //     next();
