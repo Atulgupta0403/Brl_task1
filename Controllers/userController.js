@@ -12,10 +12,10 @@ app.use(cookieParser())
 const registerUser = async (req, res) => {
     const { username, password, email } = req.body;
 
-    const data = await userModel.findOne({ username });
+    const data = await userModel.findOne( {$or : [{ username }, {email}]});
 
     if (data) {
-        res.send("email already exist")
+        res.send("username or email already exist")
     }
     else {
         const createData = await userModel.create({
@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
             username
         })
 
-        const token = jwt.sign({ username }, "secret");
+        const token = jwt.sign({ username }, process.env.SECRET);
         res.cookie("token", token)
         res.send(createData);
     }
@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
     }
     else {
         if (password === data.password) {
-            const token = jwt.sign({ username }, "secret");
+            const token = jwt.sign({ username }, process.env.SECRET);
             // console.log(token)
 
             res.cookie("token", token)

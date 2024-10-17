@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 app.use(session({
-  secret: "secret",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
 }))
