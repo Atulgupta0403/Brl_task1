@@ -14,9 +14,9 @@ router.post("/", isLoggedIn , async (req, res) => {
     if(req.user){
         const {username} = req.user;
         
-        let Id = await notesModel.findOne({ noteId: noteId });
+        let Id = await notesModel.findOne({ noteId: noteId , userId : req.user._id });
         let user = await userModel.findOne({ username });
-        console.log(user)
+        // console.log(Id)
         if (Id) {
             // console.log(Id)
             res.send("pls enter another id , this id has been selected prviously")

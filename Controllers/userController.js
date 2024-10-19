@@ -38,7 +38,7 @@ const loginUser = async (req, res) => {
     // console.log("data === " , data)
 
     if (!data) {
-        res.send(`there is no user with username ${username}`)
+        res.send(`There is no user with username ${username}`)
     }
     else {
         if (password === data.password) {
@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
             res.cookie("token", token)
 
             // console.log("login se console " , req.cookies)
-            res.send("ho gya bhai login")
+            res.send(`Welcome ${username} , you are logged in`)
         }
         else {
             res.send("Your password is incorrect");
