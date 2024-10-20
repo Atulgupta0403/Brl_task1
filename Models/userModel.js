@@ -16,6 +16,14 @@ const userSchema = new mongoose.Schema({
     notesId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "Note"
+    },
+    resetPasswordToken : {
+        type : String,
+        default : null
+    },
+    resetPasswordExpires : {
+        type : Date,
+        default : null
     }
 
 })

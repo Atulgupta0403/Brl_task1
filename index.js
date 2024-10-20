@@ -15,6 +15,7 @@ const Notes = require("./Routes/notes")
 const register = require("./Routes/register")
 const login = require("./Routes/login")
 const logout = require("./Routes/logout")
+const Email = require("./Utils/email")
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
@@ -81,6 +82,7 @@ app.use("/api/notes", Notes);
 app.use("/register", register)
 app.use("/login", login)
 app.use("/logout", logout)
+app.use("/",Email)
 
 app.get("/cookie" , (req,res) => {
   res.send(req.cookies)
