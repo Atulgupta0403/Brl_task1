@@ -1,34 +1,9 @@
-// const nodemailer = require("nodemailer")
-
-// const sendEmail = async (option) => {
-//     const transporter = nodemailer.createTransport({
-//         service: process.env.EMAIL_HOST,
-//         port: process.env.EMAIL_PORT,
-//         auth: {
-//             user: process.env.EMAIL_USERNAME,
-//             password: process.env.EMAIL_PASSWORD
-
-//         },
-//     })
-//     const emailOptions = {
-//         from: "atul <atul@mail.com>",
-//         to: option.email,
-//         subject: option.subject,
-//         text: option.message
-//     }
-
-//     await transporter.sendMail(emailOptions);
-// }
-
-
 const express = require('express');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-// const bcrypt = require('bcryptjs');
 const userModel = require("../Models/userModel")
 const router = express.Router();
 
-// Mock email transporter setup (for production use a real service like SendGrid or Gmail)
 const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
@@ -39,7 +14,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-// Route 1: Send password reset link
+// Send password reset link
 router.post('/password/reset', async (req, res) => {
     const { email } = req.body;
 
@@ -49,7 +24,7 @@ router.post('/password/reset', async (req, res) => {
             return res.status(404).send('User with this email does not exist.');
         }
 
-        // Generate a token
+        
         const token = crypto.randomBytes(32).toString('hex');
         const expiration = Date.now() + 3600000;
 
@@ -77,20 +52,19 @@ router.post('/password/reset', async (req, res) => {
     }
 });
 
-// Route 2: Reset password using token
+//  Reset password using token
 router.post('/password/reset/:token', async (req, res) => {
     const { token } = req.params;
     const { new_password } = req.body;
 
     try {
-        // const user = await userModel.findOne({
-        //     resetPasswordToken: token,
-        //     // resetPasswordExpires: { $gt: Date.now() }
-        // });
+        const user = await userModel.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
 
-        const user = await userModel.findOne({resetPasswordToken : token})
-        console.log(user);
         
+        console.log(user);
         // console.log('Token in DB:', user.resetPasswordToken);
         console.log('Token in URL:', token);
         // console.log('Expiration:', user.resetPasswordExpires, 'Current Time:', Date.now());
@@ -100,11 +74,9 @@ router.post('/password/reset/:token', async (req, res) => {
             return res.status(400).send('Password reset token is invalid or has expired.');
         }
 
-        // Hash the new password and save
-        // const hashedPassword = bcrypt.hash(new_password, 10);
-        // user.password = hashedPassword;
+        
         user.password = new_password;
-        user.resetPasswordToken = undefined; // Clear the reset token
+        user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
         await user.save();
 
