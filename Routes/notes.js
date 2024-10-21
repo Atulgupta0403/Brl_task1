@@ -14,8 +14,11 @@ router.post("/", isLoggedIn , async (req, res) => {
     if(req.user){
         const {username} = req.user;
         
-        let Id = await notesModel.findOne({ noteId: noteId , userId : req.user._id });
         let user = await userModel.findOne({ username });
+        let Id = await notesModel.findOne({ noteId: noteId , userId : user._id });
+        console.log("note == " , Id)
+        console.log("user == ", user)
+        console.log("req.user == ", req.user)
         // console.log(Id)
         if (Id) {
             // console.log(Id)
