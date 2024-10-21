@@ -66,6 +66,10 @@ app.get("/auth/google/callback",
 )
 
 app.get("/profile", (req, res) => {
+  console.log(req.user.id)
+  console.log(req.user.name)
+  console.log(req.user.emails[0].value)
+  // console.log(req.user.name.givenName)
   res.send(`<h1>Welcome ${req.user.displayName} </h1>`)
 })
 
@@ -89,4 +93,4 @@ app.get("/cookie" , (req,res) => {
 })
 
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);

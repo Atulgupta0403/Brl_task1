@@ -19,7 +19,7 @@ router.post("/", isLoggedIn , async (req, res) => {
         // console.log(Id)
         if (Id) {
             // console.log(Id)
-            res.send("pls enter another id , this id has been selected prviously")
+            res.json("pls enter another id , this id has been selected prviously")
         }
         else {
             const createNote = await notesModel.create({
@@ -30,7 +30,7 @@ router.post("/", isLoggedIn , async (req, res) => {
             })
             // console.log(createNote);
             createNote.userId = user._id;
-            res.send(createNote)
+            res.json(createNote)
         }
     }
     else{
@@ -45,10 +45,10 @@ router.get("/", isLoggedIn ,  async (req, res) => {
     if(req.user){
         const user = await userModel.findOne({username : req.user.username})
         const createdNote = await notesModel.find({ userId : user._id});
-        res.send(createdNote);
+        res.json(createdNote);
     }
     else{
-        res.send("first login kro you are directed to /login ")
+        res.json("first login kro you are directed to /login ")
     }
 })
 
@@ -61,14 +61,14 @@ router.delete("/deleteOne", isLoggedIn , async (req, res) => {
         console.log("delnote == " , delNote)
         if(delNote){
             await notesModel.findOneAndDelete({noteId : noteId})
-            res.send(delNote)
+            res.json(delNote)
         }
         else{
-            res.send(`there is no note with noteId ${noteId}`)
+            res.json(`there is no note with noteId ${noteId}`)
         }
     }
     else{
-        res.send("login kro phle you are directed to /login ")
+        res.json("login kro phle you are directed to /login ")
     }
 })
 
@@ -78,10 +78,10 @@ router.delete("/deleteAll", isLoggedIn , async (req, res) => {
     if(req.user){
         const user = await userModel.findOne({username : req.user.username})
         await notesModel.deleteMany({ userId : user._id })
-        res.send("deleted all")
+        res.json("deleted all")
     }
     else{
-        res.send("login kro phle you are directed to /login")
+        res.json("login kro phle you are directed to /login")
     }
 })
 
@@ -95,14 +95,14 @@ router.get("/note", isLoggedIn , async (req, res) => {
         const singleData = await notesModel.findOne( { noteId: noteId , userId : user._id});
         if(singleData){
             // console.log(singleData)
-            res.send(singleData)
+            res.json(singleData)
         }
         else{
-            res.send(`there is no note with noteId = ${noteId} `)
+            res.json(`there is no note with noteId = ${noteId} `)
         }
     }
     else{
-        res.send("login kro phle you are directed to /login")
+        res.json("login kro phle you are directed to /login")
     }
 })
 
@@ -120,15 +120,15 @@ router.put("/put", isLoggedIn , async (req, res) => {
         );
         
         if (!updatedNote) {
-            res.send(`note not found on noteId ${noteId}`)
+            res.json(`note not found on noteId ${noteId}`)
         }
         else {
             
-            res.send(updatedNote)
+            res.json(updatedNote)
         }
     }
     else{
-        res.send("not loggedIn")
+        res.json("not loggedIn")
     }
 })
 
@@ -144,13 +144,13 @@ router.patch("/patch", isLoggedIn , async (req, res) => {
         );
         
         if (!updatedNote) {
-            return res.send(`Note not found on noteId ${noteId}`);
+            return res.json(`Note not found on noteId ${noteId}`);
         }
         
-        res.send(updatedNote);
+        res.json(updatedNote);
     }
     else{
-        res.send("not LoggedIn")
+        res.json("not LoggedIn")
     }
 })
 
@@ -159,7 +159,7 @@ router.patch("/patch", isLoggedIn , async (req, res) => {
 router.get("/recent" , async (req,res) => {
     const note = await notesModel.find().sort({createdAt : -1}).limit(1)    
     console.log(note)
-    res.send(note)
+    res.json(note)
 })
 
 

@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
     const data = await userModel.findOne( {$or : [{ username }, {email}]});
 
     if (data) {
-        res.send("username or email already exist")
+        res.json("username or email already exist")
     }
     else {
         const createData = await userModel.create({
@@ -27,7 +27,7 @@ const registerUser = async (req, res) => {
 
         const token = jwt.sign({ username }, process.env.SECRET);
         res.cookie("token", token)
-        res.send(createData);
+        res.json(createData);
     }
 }
 
@@ -38,7 +38,7 @@ const loginUser = async (req, res) => {
     // console.log("data === " , data)
 
     if (!data) {
-        res.send(`There is no user with username ${username}`)
+        res.json(`There is no user with username ${username}`)
     }
     else {
         if (password === data.password) {
@@ -48,17 +48,17 @@ const loginUser = async (req, res) => {
             res.cookie("token", token)
 
             // console.log("login se console " , req.cookies)
-            res.send(`Welcome ${username} , you are logged in`)
+            res.json(`Welcome ${username} , you are logged in`)
         }
         else {
-            res.send("Your password is incorrect");
+            res.json("Your password is incorrect");
         }
     }
 }
 
 const logout = (req,res) => {
     res.cookie("token" , "")
-    res.send("cookie erased redirected to /login")
+    res.json("cookie erased redirected to /login")
 }
 
 module.exports = { registerUser, loginUser , logout}
