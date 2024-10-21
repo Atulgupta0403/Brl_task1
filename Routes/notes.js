@@ -199,10 +199,27 @@ router.patch("/archive" ,isLoggedIn , async (req,res) => {
 })
 
 
-router.get("/recent" , async (req,res) => {
-    const note = await notesModel.find().sort({createdAt : -1}).limit(1)    
-    console.log(note)
-    res.json(note)
+router.get("/search" ,isLoggedIn , async (req,res) => {
+    if(req.user){
+        const keyword = req.query.keyword;
+        if(keyword){
+            const user = await userModel.findOne({username : req.user.username})
+            const keywordRegex = new RegExp(keyword, 'i');
+            const note = await notesModel.find({userId : user._id , $or : [ {title : {$regex : keywordRegex}} , {content : {$regex : keywordRegex}}]})
+            if(note){
+                res.json(note)
+            }
+            else{
+                res.json("no notes are found")
+            }
+        }
+        else{
+            req.json("please provide some keyword ");
+        }
+    }
+    else{
+        res.json("you are not loggedIn , you are redirect to /login ");
+    }
 })
 
 
