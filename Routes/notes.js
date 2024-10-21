@@ -154,6 +154,8 @@ router.patch("/patch", isLoggedIn , async (req, res) => {
     }
 })
 
+
+// Retrive recent note
 router.get("/recent" ,isLoggedIn , async (req,res) => {
     if(req.user){
         const user = await userModel.findOne({username : req.user.username})
@@ -170,6 +172,31 @@ router.get("/recent" ,isLoggedIn , async (req,res) => {
     }
 })
 
+
+// archive notes
+router.patch("/archive" ,isLoggedIn , async (req,res) => {
+    if(req.user){
+        const noteId = req.query.noteId;
+        if(noteId){
+            const user = await userModel.findOne({username : req.user.username})
+            const note = await notesModel.findOne({noteId : noteId , userId : user._id})
+            if(note){
+                note.isArchived = true;
+                await note.save()
+                res.json(note)
+            }
+            else{
+                res.json(`There is no note with noteId = ${noteId} , try anotherOne`);
+            }
+        }
+        else{
+            res.json("please provide noteId");
+        }
+    }
+    else{
+        res.json("you are not loggedIn , you are redirect to /login ");
+    }
+})
 
 
 router.get("/recent" , async (req,res) => {

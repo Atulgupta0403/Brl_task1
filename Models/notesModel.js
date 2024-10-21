@@ -17,6 +17,10 @@ const noteSchema = new mongoose.Schema({
     userId : {
         type : mongoose.Schema.Types.ObjectId,
         ref : "User"
+    },
+    isArchived : {
+        type : Boolean,
+        default : false
     }
 
 }, {timestamps : true})
