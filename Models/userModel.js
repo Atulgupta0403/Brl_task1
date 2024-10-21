@@ -13,10 +13,10 @@ const userSchema = new mongoose.Schema({
     email : {
         type : String
     },
-    notesId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Note"
-    },
+    // notesId : {
+    //     type : mongoose.Schema.Types.ObjectId,
+    //     ref : "Note"
+    // },
     resetPasswordToken : {
         type : String,
         default : null

@@ -154,6 +154,22 @@ router.patch("/patch", isLoggedIn , async (req, res) => {
     }
 })
 
+router.get("/recent" ,isLoggedIn , async (req,res) => {
+    if(req.user){
+        const user = await userModel.findOne({username : req.user.username})
+        const recentData = await notesModel.findOne({userId : user._id }) .sort({createdAt : -1})
+        if(recentData){
+            res.json(recentData);
+        }
+        else{
+            res.json(`There is no notes`);
+        }
+    }
+    else{
+        res.json("you are not loggedIn , you are redirect to /login ");
+    }
+})
+
 
 
 router.get("/recent" , async (req,res) => {

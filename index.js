@@ -5,6 +5,7 @@ const cors = require("cors")
 const passport = require("passport")
 const session = require("express-session")
 const cookieParser = require("cookie-parser")
+const jwt = require("jsonwebtoken")
 app.use(cookieParser()) 
 
 app.use(cors({
@@ -61,14 +62,21 @@ app.get("/auth/google/",
 app.get("/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
+    const id = req.user.id;
+    const name = req.user.displayName;
+    console.log(req.user.emails[0].value)
+    console.log(id , name)
+
+    const token = jwt.sign({name} , process.env.SECRET)
+    console.log(token)
     res.redirect("/profile")
   }
 )
 
 app.get("/profile", (req, res) => {
-  console.log(req.user.id)
-  console.log(req.user.name)
-  console.log(req.user.emails[0].value)
+  // console.log(req.user)
+  // console.log(req.user.name)
+  // console.log(req.user.emails[0].value)
   // console.log(req.user.name.givenName)
   res.send(`<h1>Welcome ${req.user.displayName} </h1>`)
 })
